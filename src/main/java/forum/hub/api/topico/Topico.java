@@ -29,4 +29,11 @@ public class Topico {
     @Enumerated(EnumType.STRING)
      private Curso curso;
      private Double respostas;
+
+    public Topico(DadosCadastroTopico dados) {
+        this.titulo= dados.titulo();
+        this.mensagem=dados.mensagem();
+        this.autor=dados.autor();
+        this.curso=dados.curso();
+    }
 }
