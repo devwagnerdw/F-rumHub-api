@@ -28,12 +28,15 @@ public class Topico {
     private String autor;
     @Enumerated(EnumType.STRING)
      private Curso curso;
-     private Double respostas;
+     private int respostas;
 
     public Topico(DadosCadastroTopico dados) {
         this.titulo= dados.titulo();
         this.mensagem=dados.mensagem();
         this.autor=dados.autor();
         this.curso=dados.curso();
+        this.dataCriacao = new Date();
+        this.status = Status.ABERTO;
+        this.respostas=0;
     }
 }
