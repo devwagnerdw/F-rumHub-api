@@ -1,6 +1,4 @@
-package forum.hub.api.topico;
-
-import jakarta.validation.constraints.NotNull;
+package forum.hub.api.domain.topico;
 
 
 public record DadosAtualizacaoTopico (

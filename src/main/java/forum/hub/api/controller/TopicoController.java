@@ -1,7 +1,7 @@
 package forum.hub.api.controller;
 
 
-import forum.hub.api.topico.*;
+import forum.hub.api.domain.topico.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
