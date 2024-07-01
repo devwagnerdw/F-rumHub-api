@@ -39,4 +39,23 @@ public class Topico {
         this.status = Status.ABERTO;
         this.respostas=0;
     }
+
+
+    public void atualizarInformacoes(DadosAtualizacaoTopico dados) {
+        if (dados.titulo() != null) {
+            this.titulo = dados.titulo();
+        }
+        if (dados.mensagem() != null) {
+            this.mensagem = dados.mensagem();
+        }
+        if (dados.autor() != null) {
+            this.autor = dados.autor();
+        }
+
+        if (dados.curso() != null) {
+            this.curso = dados.curso();
+        }
+
+
+    }
 }
