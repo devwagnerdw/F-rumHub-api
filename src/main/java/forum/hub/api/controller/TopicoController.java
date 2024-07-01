@@ -3,17 +3,16 @@ package forum.hub.api.controller;
 
 import forum.hub.api.topico.*;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+
 import java.util.Optional;
 
 @RestController
@@ -25,13 +24,16 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody @Valid DadosCadastroTopico dados){
-        topicoRepository.save(new Topico(dados));
+    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroTopico dados, UriComponentsBuilder uriBuilder){
+        var topico = new Topico(dados);
+        topicoRepository.save(topico);
+        var uri= uriBuilder.path("/medicos/{id}").buildAndExpand(topico.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoTopico(topico));
 
     }
 
     @GetMapping
-    public Page<DadosListagemTopico> listar(
+    public  Page<DadosListagemTopico> listar(
             @RequestParam(required = false) Curso curso,
             @RequestParam(required = false) Integer ano,
             @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
