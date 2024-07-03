@@ -27,7 +27,7 @@ public class TopicoController {
     public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroTopico dados, UriComponentsBuilder uriBuilder){
         var topico = new Topico(dados);
         topicoRepository.save(topico);
-        var uri= uriBuilder.path("/medicos/{id}").buildAndExpand(topico.getId()).toUri();
+        var uri= uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosDetalhamentoTopico(topico));
 
     }
