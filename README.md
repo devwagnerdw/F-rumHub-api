@@ -66,4 +66,7 @@ Endpoint para listar tópicos com base em parâmetros opcionais de curso e ano.
 
 Endpoint para remover um tópico existente do fórum.
 
+## ✒️ Autor
+Vagne Alves - Desenvolvedor full stack
+
   
