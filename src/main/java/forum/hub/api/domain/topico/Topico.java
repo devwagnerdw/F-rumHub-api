@@ -1,11 +1,9 @@
 package forum.hub.api.domain.topico;
 
+import forum.hub.api.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -13,6 +11,7 @@ import java.util.Date;
 @Table(name="topicos")
 @Entity(name="Topico")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of= "id")
@@ -26,19 +25,22 @@ public class Topico {
     private Date dataCriacao;
     @Enumerated(EnumType.STRING)
     private Status status;
-    private String autor;
     @Enumerated(EnumType.STRING)
-     private Curso curso;
-     private int respostas;
+    private Curso curso;
+    private int respostas;
 
-    public Topico(DadosCadastroTopico dados) {
+    @ManyToOne
+    @JoinColumn(name=" usuario_id")
+    private Usuario usuario;
+
+    public Topico(DadosCadastroTopico dados, Usuario usuario) {
         this.titulo= dados.titulo();
         this.mensagem=dados.mensagem();
-        this.autor=dados.autor();
         this.curso=dados.curso();
         this.dataCriacao = new Date();
         this.status = Status.ABERTO;
         this.respostas=0;
+        this.usuario = usuario;
     }
 
 
@@ -49,9 +51,7 @@ public class Topico {
         if (dados.mensagem() != null) {
             this.mensagem = dados.mensagem();
         }
-        if (dados.autor() != null) {
-            this.autor = dados.autor();
-        }
+
 
         if (dados.curso() != null) {
             this.curso = dados.curso();

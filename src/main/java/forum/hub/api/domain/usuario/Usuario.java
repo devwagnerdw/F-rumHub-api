@@ -1,7 +1,10 @@
 package forum.hub.api.domain.usuario;
 
+import forum.hub.api.domain.topico.Topico;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Table(name = "usuarios")
 @Entity(name = "Usuario")
@@ -17,4 +20,7 @@ public class Usuario {
     private String name;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Topico> topicos;
 }

@@ -20,8 +20,6 @@ public class TratadorDeErros {
         var erros=ex.getFieldErrors();
 
         return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList());
-
-
     }
 
 

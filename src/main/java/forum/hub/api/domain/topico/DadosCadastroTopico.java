@@ -11,7 +11,5 @@ public record DadosCadastroTopico(
         @Size(min = 10, max = 300, message = "min de 10")
         String mensagem,
         @NotNull
-        String autor,
-        @NotNull
         Curso curso) {
 }

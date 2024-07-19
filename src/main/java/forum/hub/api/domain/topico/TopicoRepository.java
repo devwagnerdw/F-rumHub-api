@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface TopicoRepository extends JpaRepository<Topico,Long> {
 
     @Query("SELECT t FROM Topico t WHERE t.curso = :curso AND FUNCTION('YEAR', t.dataCriacao) = :ano")
@@ -16,5 +18,8 @@ public interface TopicoRepository extends JpaRepository<Topico,Long> {
 
     @Query("SELECT t FROM Topico t WHERE FUNCTION('YEAR', t.dataCriacao) = :ano")
     Page<Topico> findByAno(@Param("ano") Integer ano, Pageable pageable);
+
+    @Query("SELECT t FROM Topico t WHERE t.usuario.id = :usuarioId")
+    Page<Topico> findByUsuarioId(Long usuarioId, Pageable pageable);
 
 }
