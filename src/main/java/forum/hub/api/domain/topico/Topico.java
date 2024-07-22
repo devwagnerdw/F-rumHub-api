@@ -1,11 +1,13 @@
 package forum.hub.api.domain.topico;
 
+import forum.hub.api.domain.comentario.Comentario;
 import forum.hub.api.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Table(name="topicos")
@@ -33,6 +35,9 @@ public class Topico {
     @JoinColumn(name=" usuario_id")
     private Usuario usuario;
 
+    @OneToMany(mappedBy = "topico")
+    private List<Comentario> comentarios;
+
     public Topico(DadosCadastroTopico dados, Usuario usuario) {
         this.titulo= dados.titulo();
         this.mensagem=dados.mensagem();
@@ -51,12 +56,9 @@ public class Topico {
         if (dados.mensagem() != null) {
             this.mensagem = dados.mensagem();
         }
-
-
         if (dados.curso() != null) {
             this.curso = dados.curso();
         }
-
 
     }
 }

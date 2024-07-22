@@ -1,5 +1,6 @@
 package forum.hub.api.domain.usuario;
 
+import forum.hub.api.domain.comentario.Comentario;
 import forum.hub.api.domain.topico.Topico;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,4 +24,7 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario")
     private List<Topico> topicos;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Comentario> comentarios;
 }
