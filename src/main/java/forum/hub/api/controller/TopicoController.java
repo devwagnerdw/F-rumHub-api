@@ -59,6 +59,8 @@ public class TopicoController {
     }
 
 
+
+
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity excluir(@PathVariable Long id) {

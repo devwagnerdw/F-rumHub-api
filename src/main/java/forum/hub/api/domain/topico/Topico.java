@@ -59,6 +59,9 @@ public class Topico {
         if (dados.curso() != null) {
             this.curso = dados.curso();
         }
+        if (dados.status()!= null){
+            this.status=dados.status();
+        }
 
     }
 }
