@@ -2,13 +2,10 @@ package forum.hub.api.controller;
 
 
 import forum.hub.api.domain.comentario.*;
-import forum.hub.api.domain.topico.Status;
-import forum.hub.api.domain.topico.Topico;
-import forum.hub.api.domain.topico.TopicoRepository;
 import forum.hub.api.domain.usuario.Usuario;
+import forum.hub.api.service.ComentarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +18,7 @@ import java.net.URI;
 public class ComentarioController {
 
     @Autowired
-    private ComentarioRepository comentarioRepository;
-
-    @Autowired
-    private TopicoRepository topicoRepository;
+    private ComentarioService comentarioService;
 
     @PostMapping("/{id}")
     public ResponseEntity<DadosCadastroComentario> cadastrar(
@@ -32,17 +26,8 @@ public class ComentarioController {
             @RequestBody @Valid DadosCadastroComentario dados,
             UriComponentsBuilder uriBuilder,
             @AuthenticationPrincipal Usuario logado
-    ){
-        Topico topico = topicoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tópico não encontrado"));
-
-        if (topico.getStatus()!= Status.ABERTO) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        }
-
-        Comentario comentario = new Comentario(dados, logado, topico);
-
-        comentarioRepository.save(comentario);
+    ) {
+        Comentario comentario = comentarioService.cadastrar(id, dados, logado);
 
         URI uri = uriBuilder.path("/comentar/{id}").buildAndExpand(comentario.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosCadastroComentario(comentario));

@@ -2,7 +2,6 @@ package forum.hub.api.controller;
 
 import forum.hub.api.domain.topico.*;
 import forum.hub.api.domain.usuario.Usuario;
-import forum.hub.api.domain.usuario.UsuarioRepository;
 import forum.hub.api.service.TopicoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,7 @@ import java.util.Optional;
 public class TopicoController {
 
     @Autowired
-    TopicoService topicoService;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private TopicoRepository topicoRepository;
+    private TopicoService topicoService;
 
     @PostMapping
     public ResponseEntity<DadosDetalhamentoTopico> cadastrar(
@@ -37,48 +31,45 @@ public class TopicoController {
             UriComponentsBuilder uriBuilder,
             @AuthenticationPrincipal Usuario logado
     ) {
-        Topico topico = new Topico(dados, logado);
-        topicoRepository.save(topico);
+        Topico topico = topicoService.criarTopico(dados, logado);
         URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(uri).body(new DadosDetalhamentoTopico(topico));
     }
 
-
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados, @AuthenticationPrincipal Usuario logado) {
-        return topicoRepository.findById(id)
-                .map(topico -> {
-                    if (!topico.getUsuario().getId().equals(logado.getId())) {
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Você não tem permissão para atualizar este tópico.");
-                    }
-                    topico.atualizarInformacoes(dados);
-                    return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados, @AuthenticationPrincipal Usuario logado) {
+        Optional<Topico> topicoOptional = topicoService.buscarTopicoPorId(id);
+        if (topicoOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Topico topico = topicoOptional.get();
+        if (!topico.getUsuario().getId().equals(logado.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        topicoService.atualizarTopico(topico, dados);
+        return ResponseEntity.ok().build();
     }
-
-
-
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id) {
-        return topicoRepository.findById(id)
-                .map(topico -> {
-                    topicoRepository.deleteById(id);
-                    return ResponseEntity.noContent().build();
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        Optional<Topico> topicoOptional = topicoService.buscarTopicoPorId(id);
+        if (topicoOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        topicoService.excluirTopico(topicoOptional.get());
+        return ResponseEntity.noContent().build();
     }
-
-
 
     @GetMapping
     public Page<DadosListagemTopico> listar(
             @AuthenticationPrincipal Usuario logado,
             @PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
-        return topicoRepository.findByUsuarioId(logado.getId(), paginacao).map(DadosListagemTopico::new);
+        return topicoService.listarTopicosPorUsuarioId(logado.getId(), paginacao);
     }
 
     @GetMapping("/{id}")
