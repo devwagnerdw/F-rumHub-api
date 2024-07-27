@@ -35,7 +35,7 @@ public class Topico {
     @JoinColumn(name=" usuario_id")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "topico")
+    @OneToMany(mappedBy = "topico", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios;
 
     public Topico(DadosCadastroTopico dados, Usuario usuario) {

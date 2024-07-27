@@ -38,30 +38,15 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados, @AuthenticationPrincipal Usuario logado) {
-        Optional<Topico> topicoOptional = topicoService.buscarTopicoPorId(id);
-        if (topicoOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Topico topico = topicoOptional.get();
-        if (!topico.getUsuario().getId().equals(logado.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
-        topicoService.atualizarTopico(topico, dados);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<DadosDetalhamentoTopico> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizacaoTopico dados, @AuthenticationPrincipal Usuario logado) {
+        Topico topico = topicoService.atualizarTopico(id, dados, logado);
+        return ResponseEntity.ok(new DadosDetalhamentoTopico(topico));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        Optional<Topico> topicoOptional = topicoService.buscarTopicoPorId(id);
-        if (topicoOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        topicoService.excluirTopico(topicoOptional.get());
+    public ResponseEntity<Void> excluir(@PathVariable Long id,@AuthenticationPrincipal Usuario logado) {
+        topicoService.excluirTopico(id,logado);
         return ResponseEntity.noContent().build();
     }
 

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,19 +26,20 @@ public class DadosListagemTopico {
     private List<DadosComentario> comentarios;
 
 
-
-    public DadosListagemTopico(Topico topico) {
-        this.id = topico.getId();
-        this.titulo = topico.getTitulo();
-        this.mensagem = topico.getMensagem();
-        this.dataCriacao = topico.getDataCriacao();
-        this.status = topico.getStatus();
-        this.curso = topico.getCurso();
-        this.respostas = topico.getRespostas();
-        this.usuarioId = topico.getUsuario().getId();
-        this.comentarios = topico.getComentarios().stream()
+    public static DadosListagemTopico fromTopico(Topico topico) {
+        List<DadosComentario> comentariosConvertidos = topico.getComentarios().stream()
                 .map(DadosComentario::new)
-                .toList();
-    }
+                .collect(Collectors.toList());
 
-}
+        return new DadosListagemTopico(
+                topico.getId(),
+                topico.getTitulo(),
+                topico.getMensagem(),
+                topico.getDataCriacao(),
+                topico.getStatus(),
+                topico.getCurso(),
+                topico.getRespostas(),
+                topico.getUsuario().getId(),
+                comentariosConvertidos);
+
+}}

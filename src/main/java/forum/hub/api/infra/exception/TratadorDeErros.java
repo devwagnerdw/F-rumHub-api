@@ -21,6 +21,13 @@ public class TratadorDeErros {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
+    @ExceptionHandler(UsuarioNaoAutorizadoException.class)
+    public ResponseEntity<String> handleUsuarioNaoAutorizado(UsuarioNaoAutorizadoException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+
+
 
 
     @ExceptionHandler(EntityNotFoundException.class)
